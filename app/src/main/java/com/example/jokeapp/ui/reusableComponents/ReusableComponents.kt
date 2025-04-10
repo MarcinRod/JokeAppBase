@@ -316,54 +316,6 @@ fun ExposedDropdownMenuSamplePreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun ChipGroupSingleLineSample() {
-    var expanded by remember { mutableStateOf(false) }
-    val listSize = 9
-    val chipData = List(listSize) { index -> "Chip $index" }
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
-            AssistChip(
-                onClick = { expanded = !expanded },
-                label = { Text("Show All") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Default.List,
-                        contentDescription = "Localized Description",
-                        modifier = Modifier.size(FilterChipDefaults.IconSize)
-                    )
-                }
-            )
-            /*
-             * When chip lists exceed the available horizontal screen space, one option is to
-             * provide a chip button that opens a menu displaying all chip options. This ensures
-             * all options are accessible while maintaining the position of the content below the
-             * chip list.
-             */
-            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                repeat(listSize) { index ->
-                    DropdownMenuItem(
-                        text = { Text(chipData[index]) },
-                        onClick = {},
-                        trailingIcon = {
-                            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null)
-                        }
-                    )
-                }
-            }
-            repeat(listSize) { index ->
-                AssistChip(
-                    modifier = Modifier.padding(horizontal = 4.dp),
-                    onClick = { /* do something*/ },
-                    label = { Text(chipData[index]) },
-                    trailingIcon = { Icon(Icons.Filled.ArrowDropDown, contentDescription = null) },
-                )
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
 fun ChipGroupReflowSamplePreview() {
     val colorNames =
         listOf(
@@ -389,5 +341,35 @@ fun ChipGroupReflowSamplePreview() {
             // Handle chip click
             selectionState[it] = !selectionState[it]
         }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun InfoMessagePreview() {
+    JokeAppTheme {
+       InfoMessage(
+            message = "This is an info message",
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun LoadingIndicatorPreview() {
+    JokeAppTheme {
+       LoadingIndicator(
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun ErrorMessagePreview() {
+    JokeAppTheme {
+        ErrorMessage(
+            errorTitle = "Error",
+            errorMessage = "This is an error message",
+            modifier = Modifier.padding(16.dp)
+        )
     }
 }
