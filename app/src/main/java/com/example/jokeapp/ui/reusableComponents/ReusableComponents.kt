@@ -373,3 +373,14 @@ fun ErrorMessagePreview() {
         )
     }
 }
+@Preview(showBackground = true)
+@Composable
+fun SingleChoiceSegmentedButtonPreview() {
+    JokeAppTheme {
+        SingleChoiceSegmentedButton(
+            options = listOf("Option 1", "Option 2"),
+            selectedIndex = 1,
+            onOptionSelected = {}
+        )
+    }
+}
