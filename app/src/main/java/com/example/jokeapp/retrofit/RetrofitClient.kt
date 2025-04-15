@@ -4,7 +4,6 @@ package com.example.jokeapp.retrofit
 import androidx.annotation.StringRes
 import com.example.jokeapp.R
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
