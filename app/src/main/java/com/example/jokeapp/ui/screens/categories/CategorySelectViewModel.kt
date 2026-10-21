@@ -9,6 +9,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.Response
+
 
 // TODO: Placeholder for the CategorySelectViewModel and the Category UI state

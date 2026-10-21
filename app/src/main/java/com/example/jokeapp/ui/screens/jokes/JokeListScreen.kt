@@ -69,7 +69,22 @@ fun JokeListScreen(
 
     // TODO: Show the selected joke dialog when selectedJoke != null
 
+    // TODO: Show the main content of the screen
 
+
+}
+
+@Composable
+fun JokeListScreenContent(
+    uiState: JokeListUiState,
+    queryState: JokeQueryUiState,
+    modifier: Modifier = Modifier,
+    updateBlocklistSelection: (Int) -> Unit,
+    updateJokeType: (Int) -> Unit,
+    updateNumberOfJokes: (Int) -> Unit,
+    fetchJokes: () -> Unit,
+    selectJoke: (Joke) -> Unit
+) {
     // The main part of the screen
     Column(modifier = modifier) {
         // This view allows the user to select options for the joke query.
@@ -84,8 +99,6 @@ fun JokeListScreen(
         // TODO: Respond to uiState changes in the ViewModel
     }
 }
-
-
 /**
  * A composable function that displays a list of jokes in a card layout.
  * @param jokes The list of jokes to be displayed.
@@ -196,13 +209,16 @@ fun JokeListItem(joke: Joke, modifier: Modifier = Modifier, onClick: () -> Unit 
  */
 @Composable
 fun JokeQueryCardView(
-   /*TODO: ADD viewModel*/
+   /*TODO: ADD query state*/
+   onBlocklistSelection: (Int) -> Unit,
+   onUpdateJokeType: (Int) -> Unit,
+   onUpdateNumberOfJokes: (Int) -> Unit,
     onGetJokesClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // TODO: read the options from the viewModel
+    // TODO: read the query config
 
-    // TODO: Observe the query state from the ViewModel
+    // TODO: Observe the query state
 
     Card(
         modifier = modifier

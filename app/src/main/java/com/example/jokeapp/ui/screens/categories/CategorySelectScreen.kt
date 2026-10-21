@@ -48,6 +48,9 @@ fun CategorySelectScreen(
 
 }
 
+
+
+
 /**
  * A composable function that displays a single category item.
  * It is used within the [CategorySelectScreen] to represent each category in the list.
@@ -69,9 +72,9 @@ fun CategoryItem(categoryName: String, modifier: Modifier = Modifier, onCategory
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround,
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(16.dp)
         ) {
             // Display the category name abbreviation in a circular shape with a border
             Text(

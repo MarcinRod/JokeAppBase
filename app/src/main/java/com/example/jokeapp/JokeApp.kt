@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -23,17 +24,30 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.toRoute
 import com.example.jokeapp.ui.screens.categories.CategorySelectScreen
 import com.example.jokeapp.ui.screens.jokes.JokeListScreen
-
+import com.example.jokeappcompose.R
+import kotlinx.serialization.Serializable
 
 /**
- * Enum class representing the different destinations in the app.
- * @param title The string resource ID for the title of the destination.
+ * sealed interface representing the different destinations in the app.
+
  */
-enum class JokeAppDestinations(@StringRes val title: Int) {
-    JOKE_CATEGORIES(R.string.category_screen_title),
-    JOKES_LIST(R.string.jokes_screen_title),
+
+sealed interface  JokeAppDestinations {
+    // titleResId The string resource ID for the title of the destination.
+    @get:StringRes val titleResId: Int
+    @Serializable
+    data object JokeCategories: JokeAppDestinations{
+        override val titleResId: Int
+            get() = R.string.category_screen_title
+    }
+    @Serializable
+    data class JokesList(val category: String): JokeAppDestinations{
+        override val titleResId: Int
+            get() = R.string.jokes_screen_title
+    }
 }
 
 /**
@@ -42,16 +56,18 @@ enum class JokeAppDestinations(@StringRes val title: Int) {
  */
 @Composable
 fun JokeApp(navController: NavHostController = rememberNavController()) {
+    // Getting current screen name from backStackEntry Destination
     val backStackEntry by navController.currentBackStackEntryAsState()
-    // substringBefore("/") is used to get the screen name from the route without parameters
-    val screenName = backStackEntry?.destination?.route?.substringBefore("/")
-    // Get the title for the current screen based on the screen name.
-    // If the screen name is JOKES_LIST, the category is appended to the title.
-    val currentScreenTitle = stringResource(
-        JokeAppDestinations.valueOf(screenName ?: JokeAppDestinations.JOKE_CATEGORIES.name).title
-    ) + if (screenName == JokeAppDestinations.JOKES_LIST.name)
-        " - ${backStackEntry?.arguments?.getString("category")}"
-    else ""
+
+    val screenNameResId = when {
+        backStackEntry?.destination?.hasRoute<JokeAppDestinations.JokeCategories>() == true ->
+            backStackEntry?.toRoute<JokeAppDestinations.JokeCategories>()?.titleResId
+        backStackEntry?.destination?.hasRoute<JokeAppDestinations.JokesList>() == true ->
+            backStackEntry?.toRoute<JokeAppDestinations.JokesList>()?.titleResId
+        else ->
+            R.string.app_name
+    } ?: R.string.app_name
+    val currentScreenTitle = stringResource(screenNameResId)
 
 
     Scaffold(
@@ -67,30 +83,24 @@ fun JokeApp(navController: NavHostController = rememberNavController()) {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = JokeAppDestinations.JOKE_CATEGORIES.name,
+            startDestination = JokeAppDestinations.JokeCategories,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            composable(JokeAppDestinations.JOKE_CATEGORIES.name) {
+            composable<JokeAppDestinations.JokeCategories>{
                 // Start screen with category selection.
                 // onCategorySelected will navigate to the jokes list screen with a selected category.
                 CategorySelectScreen(
                     onCategorySelected = { category ->
-                        navController.navigate("${JokeAppDestinations.JOKES_LIST.name}/$category")
+                        navController.navigate(JokeAppDestinations.JokesList(category))
                     }
                 )
             }
-            composable(
-                "${JokeAppDestinations.JOKES_LIST.name}/{category}",
-                arguments = listOf(
-                    navArgument("category") {
-                        type = NavType.StringType
-                        nullable = false // category cannot be null
-                    }
-                )
-            ) { backStackEntry ->
-                // Jokes list screen with the selected category passed as an argument via a ViewModel.
+            composable<JokeAppDestinations.JokesList> { backStackEntry ->
+                // Jokes list screen with the selected category passed as an argument.
+                // The viewModel is gets the argument from the backStackEntry
+                // via the savedStateHandle used in the view model factory.
                 JokeListScreen()
             }
         }
